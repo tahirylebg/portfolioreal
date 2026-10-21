@@ -20,7 +20,18 @@ const year = new Date().getFullYear();
   <body>
     <a class="skip-link" href="#contenu">Aller au contenu</a>
     <div class="scroll-progress" aria-hidden="true"></div>
-    <header class="site-header">
+    <aside class="scroll-gauge" aria-hidden="true">
+      <span class="scroll-gauge-track"><i class="scroll-gauge-fill"></i></span>
+      <span class="scroll-gauge-readout" data-scroll-readout>00%</span>
+      <nav class="scroll-gauge-ticks">
+        <a href="#accueil" data-gauge="accueil"></a>
+        <a href="#profil" data-gauge="profil"></a>
+        <a href="#projets" data-gauge="projets"></a>
+        <a href="#parcours" data-gauge="parcours"></a>
+        <a href="#contact" data-gauge="contact"></a>
+      </nav>
+    </aside>
+    <header class="site-header" data-site-header>
       <a class="brand" href="#accueil" aria-label="Accueil, Tahiry Ramambazafy">
         <span class="brand-mark" aria-hidden="true"><span class="brand-letter">T</span><span class="brand-axis"></span><span class="brand-dot"></span></span>
         <span class="brand-name">TAHIRY RAMAMBAZAFY</span>
@@ -34,9 +45,9 @@ const year = new Date().getFullYear();
     </header>
 
     <main id="contenu">
-      <section class="hero" id="accueil" aria-labelledby="hero-title">
-        <div class="hero-gridline" aria-hidden="true"></div>
-        <div class="hero-copy">
+      <section class="hero" id="accueil" aria-labelledby="hero-title" data-scroll-section>
+        <div class="hero-gridline" aria-hidden="true" data-parallax="0.08"></div>
+        <div class="hero-copy" data-parallax="0.18">
           <p class="hero-overline"><span class="signal-dot"></span> {profile.role} <span class="overline-divider">/</span> Ynov</p>
           <h1 id="hero-title">Comprendre.<br />Sécuriser<span class="hero-period">.</span><br /><span class="hero-outline">Construire.</span></h1>
           <p class="hero-focus">{profile.focus}</p>
@@ -68,9 +79,9 @@ const year = new Date().getFullYear();
         <a class="scroll-cue" href="#profil"><span class="scroll-line"></span> DÉFILER POUR EXPLORER</a>
       </section>
 
-      <section class="profile-section section-shell" id="profil" aria-labelledby="profile-title">
+      <section class="profile-section section-shell" id="profil" aria-labelledby="profile-title" data-scroll-section>
         <div class="profile-rail">
-          <div class="section-heading profile-heading">
+          <div class="section-heading profile-heading" data-parallax="0.14">
             <p class="section-kicker">LE PROFIL</p>
             <h2 id="profile-title">La curiosité<br />comme première <span>ligne de défense.</span></h2>
           </div>
@@ -89,7 +100,7 @@ const year = new Date().getFullYear();
             </div>
           </section>
         </div>
-        <div class="profile-body">
+        <div class="profile-body" data-parallax="0.1">
           <p class="profile-lead">Mon intérêt pour l’informatique a commencé par l’infrastructure : les systèmes, les réseaux et tout ce qui permet aux services numériques de fonctionner.</p>
           <p>La cybersécurité s’est imposée comme une suite naturelle. Elle me permet de partir de cette base technique tout en explorant des sujets très différents : comprendre les failles, protéger les systèmes, analyser les risques et chercher des réponses concrètes. C’est cette polyvalence qui me plaît.</p>
           <p>Chez Ynov, je développe ces compétences à travers des projets en sécurité web, en OSINT et en administration Linux. À terme, je souhaite m’orienter vers un métier lié à la sécurité informatique, continuer à apprendre et contribuer à la protection des infrastructures et des données.</p>
@@ -97,24 +108,41 @@ const year = new Date().getFullYear();
           <p>Mes expériences comme équipier polyvalent et ouvrier agricole m’ont appris deux autres réflexes que je retrouve dans ce domaine : savoir prendre ma place dans une équipe et m’adapter au travail concret, avec sérieux et constance. Aujourd’hui, je veux réunir ces qualités et mon intérêt pour l’infrastructure dans un métier de la sécurité informatique.</p>
           <div class="language-row"><span>LANGUES</span>{profile.languages.map((language) => <span class="language-tag">{language}</span>)}</div>
         </div>
-        <div class="profile-stamp" aria-hidden="true"><span>APPRENDRE<br />TESTER<br />RENFORCER</span><span class="stamp-mark">↗</span></div>
+        <div class="profile-stamp" aria-hidden="true" data-parallax="0.22"><span>APPRENDRE<br />TESTER<br />RENFORCER</span><span class="stamp-mark">↗</span></div>
       </section>
 
-      <section class="projects-section" id="projets" aria-labelledby="projects-title">
+      <section class="projects-section" id="projets" aria-labelledby="projects-title" data-scroll-section>
         <div class="section-shell">
-          <div class="projects-header">
+          <div class="projects-header" data-parallax="0.12">
             <div class="section-heading">
               <p class="section-kicker">TRAVAUX SÉLECTIONNÉS</p>
               <h2 id="projects-title">Du concret,<br /><span>sur le terrain.</span></h2>
             </div>
-            <p class="projects-intro">Des projets personnels pour apprendre en construisant : applications, systèmes et analyse de sécurité.</p>
+            <div class="projects-header-aside">
+              <p class="projects-count"><b>{String(projects.length).padStart(2, '0')}</b> ENTRÉES</p>
+              <p class="projects-intro">Des projets personnels pour apprendre en construisant : applications, systèmes et analyse de sécurité.</p>
+            </div>
           </div>
           <div class="project-list">
-            {projects.map((project, index) => (
-              <article class:list={['project-row', `tone-${project.tone}`]} style={`--reveal-delay: ${Math.min(index * 75, 375)}ms`}>
-                <div class="project-index">0{index + 1}<span> / 0{projects.length}</span></div>
-                <div class:list={['project-visual', `visual-${project.visual}`]} aria-hidden="true">
-                  {project.cover && <img class="project-cover" src={project.cover} alt={`Couverture du projet ${project.name}`} loading="eager" />}
+            {projects.map((project, index) => {
+              const n = String(index + 1).padStart(2, '0');
+              const total = String(projects.length).padStart(2, '0');
+              return (
+              <article class:list={['project-row', `tone-${project.tone}`]} style={`--reveal-delay: ${Math.min(index * 75, 375)}ms`} data-parallax-row>
+                <div class="project-index" aria-hidden="true" data-parallax="0.08">{n}<span> / {total}</span></div>
+                <div class:list={['project-visual', `visual-${project.visual}`]} data-parallax="0.16">
+                  {project.cover && (
+                    project.pdf
+                      ? <a class="project-cover-link" href={project.pdf} target="_blank" rel="noreferrer" aria-label={`Ouvrir la présentation de ${project.name}`}>
+                          <img class="project-cover" src={project.cover} alt="" loading={index < 2 ? 'eager' : 'lazy'} />
+                        </a>
+                      : <img class="project-cover" src={project.cover} alt="" loading="lazy" />
+                  )}
+                  <div class="project-visual-meta" aria-hidden="true">
+                    <span>PRJ / {n}</span>
+                    <span class="project-visual-signal">SCAN</span>
+                  </div>
+                  <span class="project-frame" aria-hidden="true"></span>
                 </div>
                 <div class="project-content">
                   <p class="project-category">{project.category}</p>
@@ -127,14 +155,15 @@ const year = new Date().getFullYear();
                   {project.pdf && <a class="project-action project-presentation" href={project.pdf} target="_blank" rel="noreferrer">Présentation <span aria-hidden="true">↗</span></a>}
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
           <p class="projects-note"><span>+</span> D’autres projets viendront enrichir cette sélection.</p>
         </div>
       </section>
 
-      <section class="experience-section section-shell" id="parcours" aria-labelledby="experience-title">
-        <div class="experience-heading">
+      <section class="experience-section section-shell" id="parcours" aria-labelledby="experience-title" data-scroll-section>
+        <div class="experience-heading" data-parallax="0.14">
           <p class="section-kicker">EXPÉRIENCE & FORMATION</p>
           <h2 id="experience-title">Mon parcours<span>.</span></h2>
           <p>{profile.school}</p>
@@ -196,10 +225,10 @@ const year = new Date().getFullYear();
         </div>
       </section>
 
-      <section class="contact-section" id="contact" aria-labelledby="contact-title">
+      <section class="contact-section" id="contact" aria-labelledby="contact-title" data-scroll-section>
         <div class="contact-inner section-shell">
-          <div class="contact-copy"><p class="section-kicker">OUVERT AUX ÉCHANGES</p><h2 id="contact-title">Un système à<br /><span>renforcer ?</span></h2><p>Pour parler cybersécurité, infrastructure, stage ou projet, ma boîte de réception est ouverte.</p></div>
-          <div class="contact-actions">
+          <div class="contact-copy" data-parallax="0.1"><p class="section-kicker">OUVERT AUX ÉCHANGES</p><h2 id="contact-title">Un système à<br /><span>renforcer ?</span></h2><p>Pour parler cybersécurité, infrastructure, stage ou projet, ma boîte de réception est ouverte.</p></div>
+          <div class="contact-actions" data-parallax="0.18">
             <p class="contact-channel">CANAL DIRECT <b>·</b> RÉPONSE SOUS 48H</p>
             <a class="contact-email" href={`mailto:${profile.email}`}><span>{profile.email}</span><i aria-hidden="true">↗</i></a>
             <div class="contact-links"><a href={`tel:${profile.phone}`}>Téléphone <span aria-hidden="true">↗</span></a><a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a><a href="/cv-tahiry-ramambazafy.pdf" target="_blank" rel="noreferrer">Curriculum vitæ <span aria-hidden="true">↗</span></a></div>
@@ -243,26 +272,81 @@ const year = new Date().getFullYear();
         const root = document.documentElement;
         const hero = document.querySelector('.hero');
         const heroParallax = document.querySelector('[data-hero-parallax]');
+        const header = document.querySelector('[data-site-header]');
         const contact = document.querySelector('.contact-section');
         const contactGrid = document.querySelector('.contact-grid');
+        const readout = document.querySelector('[data-scroll-readout]');
+        const gaugeTicks = [...document.querySelectorAll('[data-gauge]')];
+        const parallaxNodes = [...document.querySelectorAll('[data-parallax]')];
+        const scrollSections = [...document.querySelectorAll('[data-scroll-section]')];
+        const projectRows = [...document.querySelectorAll('[data-parallax-row]')];
         const fallbackParallax = !CSS.supports('animation-timeline: view()');
         const projectCovers = [...document.querySelectorAll('.project-cover, .certificate-preview img')];
         let queued = false;
+        let lastY = window.scrollY;
+        let velocity = 0;
+
+        const sectionProgress = (el) => {
+          const rect = el.getBoundingClientRect();
+          const total = window.innerHeight + rect.height;
+          return Math.min(Math.max((window.innerHeight - rect.top) / total, 0), 1);
+        };
 
         const updateMotion = () => {
+          const y = window.scrollY;
           const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-          root.style.setProperty('--page-progress', String(scrollable > 0 ? window.scrollY / scrollable : 0));
+          const pageProgress = scrollable > 0 ? y / scrollable : 0;
+          velocity += ((y - lastY) - velocity) * 0.18;
+          lastY = y;
+
+          root.style.setProperty('--page-progress', pageProgress.toFixed(4));
+          root.style.setProperty('--scroll-velocity', Math.max(-1.4, Math.min(1.4, velocity / 28)).toFixed(3));
+          root.classList.toggle('is-scrolled', y > 28);
+
+          if (readout) readout.textContent = `${String(Math.round(pageProgress * 100)).padStart(2, '0')}%`;
 
           if (hero) {
-            const heroProgress = Math.min(Math.max(window.scrollY / Math.max(hero.offsetHeight, 1), 0), 1);
+            const heroProgress = Math.min(Math.max(y / Math.max(hero.offsetHeight * 0.85, 1), 0), 1);
             root.style.setProperty('--hero-progress', heroProgress.toFixed(3));
           }
+
+          if (header) header.dataset.compact = y > 48 ? 'true' : 'false';
+
+          scrollSections.forEach((section) => {
+            const progress = sectionProgress(section);
+            section.style.setProperty('--inview', progress.toFixed(3));
+            const mid = Math.abs(progress - 0.5);
+            section.classList.toggle('is-active-section', mid < 0.28);
+          });
+
+          const activeId = scrollSections.find((section) => section.classList.contains('is-active-section'))?.id;
+          gaugeTicks.forEach((tick) => {
+            tick.classList.toggle('is-active', tick.dataset.gauge === activeId);
+          });
+
+          parallaxNodes.forEach((node) => {
+            const speed = Number.parseFloat(node.dataset.parallax) || 0.12;
+            const rect = node.getBoundingClientRect();
+            const offset = (rect.top + rect.height * 0.5 - window.innerHeight * 0.5) / window.innerHeight;
+            const shift = offset * speed * -90;
+            const skew = velocity * speed * 0.35;
+            node.style.setProperty('--parallax-y', `${shift.toFixed(2)}px`);
+            node.style.setProperty('--parallax-skew', `${Math.max(-1.2, Math.min(1.2, skew)).toFixed(2)}deg`);
+          });
+
+          projectRows.forEach((row, index) => {
+            const progress = sectionProgress(row);
+            const depth = (progress - 0.5) * (14 + (index % 3) * 4);
+            row.style.setProperty('--row-shift', `${depth.toFixed(2)}px`);
+            row.style.setProperty('--row-scale', (0.985 + Math.max(0, 1 - Math.abs(progress - 0.52) * 1.6) * 0.015).toFixed(4));
+            row.classList.toggle('is-near', Math.abs(progress - 0.5) < 0.22);
+          });
 
           if (fallbackParallax) {
             projectCovers.forEach((cover) => {
               const rect = cover.getBoundingClientRect();
               const travel = Math.min(Math.max((window.innerHeight - rect.top) / (window.innerHeight + rect.height), 0), 1);
-              cover.style.setProperty('--image-shift', `${((travel - 0.5) * 12).toFixed(2)}%`);
+              cover.style.setProperty('--image-shift', `${((travel - 0.5) * 14).toFixed(2)}%`);
             });
           }
           queued = false;
@@ -279,10 +363,10 @@ const year = new Date().getFullYear();
           hero.addEventListener('pointermove', (event) => {
             const bounds = hero.getBoundingClientRect();
             const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
-            const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+            const yPointer = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
             root.style.setProperty('--hero-pointer-x', x.toFixed(3));
-            root.style.setProperty('--hero-pointer-y', y.toFixed(3));
-            root.style.setProperty('--hero-tilt-x', `${(y * 5).toFixed(2)}deg`);
+            root.style.setProperty('--hero-pointer-y', yPointer.toFixed(3));
+            root.style.setProperty('--hero-tilt-x', `${(yPointer * 5).toFixed(2)}deg`);
             root.style.setProperty('--hero-tilt-y', `${(x * -7).toFixed(2)}deg`);
           }, { passive: true });
 
@@ -298,9 +382,9 @@ const year = new Date().getFullYear();
           contact.addEventListener('pointermove', (event) => {
             const bounds = contact.getBoundingClientRect();
             const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
-            const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+            const yPointer = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
             root.style.setProperty('--contact-pointer-x', x.toFixed(3));
-            root.style.setProperty('--contact-pointer-y', y.toFixed(3));
+            root.style.setProperty('--contact-pointer-y', yPointer.toFixed(3));
           }, { passive: true });
 
           contact.addEventListener('pointerleave', () => {
@@ -312,6 +396,9 @@ const year = new Date().getFullYear();
         updateMotion();
         window.addEventListener('scroll', requestMotionUpdate, { passive: true });
         window.addEventListener('resize', requestMotionUpdate, { passive: true });
+      } else {
+        const readout = document.querySelector('[data-scroll-readout]');
+        if (readout) readout.textContent = '—';
       }
 
       if (canvas && context) {
