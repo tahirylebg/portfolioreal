@@ -22,3 +22,11 @@ Les couvertures des projets sont générées depuis la première page de leurs P
 ```sh
 npm run covers
 ```
+
+L'image de partage pour LinkedIn, X et autres réseaux se régénère avec :
+
+```sh
+npm run og
+```
+
+Le résultat est écrit dans `public/og-image.jpg` (1200 × 627 px, JPEG), donc servi à l'adresse `/og-image.jpg`. Les balises Open Graph et Twitter Card sont déclarées dans `src/pages/index.astro`.
