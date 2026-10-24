@@ -1,4 +1,4 @@
-/* Tokens. Navy surfaces + one action accent (lime); cyan / amber only carry status meaning.
+/* Tokens. Navy surfaces + one action accent (lime); labels and badges stay neutral.
    Text contrast on --panel: ink 13:1, muted 7.4:1, subtle 4.9:1 (WCAG AA ≥ 4.5). */
 :root {
   color-scheme: dark;
@@ -13,9 +13,6 @@
   --lime: #9fef00;
   --lime-hover: #b6f53f;
   --on-lime: #111927;
-  --cyan: #5cc8e0;
-  --amber: #ffb547;
-  --violet: #b59cff;
   --radius: 6px;
   --sans: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
   --mono: 'JetBrains Mono', Consolas, monospace;
@@ -57,12 +54,7 @@ img { max-width: 100%; }
 .button-secondary { border-color: var(--line-strong); background: transparent; color: var(--ink); }
 .button-secondary:hover { border-color: var(--lime); color: var(--lime); }
 
-.pill { display: inline-block; padding: 0.15rem 0.5rem; border-left: 2px solid var(--line-strong); border-radius: 0 3px 3px 0; background: var(--panel-2); color: var(--muted); font: 600 0.72rem/1.35 var(--sans); white-space: nowrap; }
-/* Colour lives only in the left edge: the label itself stays neutral on the navy background. */
-.pill.is-done, .kind-web { border-left-color: var(--lime); }
-.pill.is-current, .kind-osint { border-left-color: var(--cyan); }
-.pill.is-upcoming, .kind-infra { border-left-color: var(--amber); }
-.kind-dev { border-left-color: var(--violet); }
+.pill { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 3px; background: var(--panel-2); color: var(--muted); font: 600 0.72rem/1.35 var(--sans); white-space: nowrap; }
 
 .inline-link { color: var(--lime); text-decoration: underline; text-decoration-color: rgba(159, 239, 0, 0.4); text-underline-offset: 0.2em; white-space: nowrap; }
 .inline-link:hover { text-decoration-color: var(--lime); }
@@ -179,7 +171,7 @@ h1 { margin-bottom: 0.75rem; font-size: clamp(2.6rem, 5.4vw, 4.25rem); font-weig
 .cert-item img { width: 3.5rem; height: 2.6rem; border-radius: 4px; object-fit: cover; background: var(--ink); }
 .cert-item h4 { margin: 0 0 0.15rem; font-size: 0.88rem; font-weight: 600; line-height: 1.35; }
 .cert-item p { margin: 0; color: var(--subtle); font-size: 0.78rem; }
-.cert-current { grid-template-columns: minmax(0, 1fr) auto; border-color: rgba(92, 200, 224, 0.35); }
+.cert-current { grid-template-columns: minmax(0, 1fr) auto; }
 .cert-link { padding: 0.35rem 0.5rem; border-radius: 4px; color: var(--muted); font: 500 0.75rem/1 var(--mono); text-decoration: none; }
 .cert-link:hover { background: var(--panel-2); color: var(--lime); }
 
