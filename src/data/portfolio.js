@@ -3,6 +3,7 @@ export const profile = {
   role: 'Étudiant en cybersécurité',
   focus: 'Systèmes, réseaux & sécurité web',
   school: 'Ynov · Administrateur systèmes et réseaux (titre RNCP)',
+  rncp: { code: 'RNCP 41996', url: 'https://www.francecompetences.fr/recherche/rncp/41996/' },
   seeking: 'Alternance en cybersécurité',
   location: 'Toulouse',
   email: 'tahiry.ramambazafypro@outlook.com',

@@ -67,6 +67,9 @@ img { max-width: 100%; }
 .kind-infra { color: var(--amber); }
 .kind-dev { color: var(--violet); }
 
+.inline-link { color: var(--lime); text-decoration: underline; text-decoration-color: rgba(159, 239, 0, 0.4); text-underline-offset: 0.2em; white-space: nowrap; }
+.inline-link:hover { text-decoration-color: var(--lime); }
+
 .tag-list { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
 .tag { padding: 0.25rem 0.55rem; border-radius: 4px; background: var(--panel-2); color: var(--muted); font: 400 0.75rem/1.3 var(--mono); }
 
