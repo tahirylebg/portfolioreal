@@ -57,14 +57,12 @@ img { max-width: 100%; }
 .button-secondary { border-color: var(--line-strong); background: transparent; color: var(--ink); }
 .button-secondary:hover { border-color: var(--lime); color: var(--lime); }
 
-.pill { display: inline-block; padding: 0.15rem 0.45rem; border-radius: 3px; background: var(--panel-2); color: var(--muted); font: 600 0.72rem/1.35 var(--sans); white-space: nowrap; }
-.pill.is-done { background: rgba(159, 239, 0, 0.1); color: var(--lime); }
-.pill.is-current { background: rgba(92, 200, 224, 0.12); color: var(--cyan); }
-.pill.is-upcoming { background: rgba(255, 181, 71, 0.12); color: var(--amber); }
-.kind-web { background: rgba(159, 239, 0, 0.1); color: var(--lime); }
-.kind-osint { background: rgba(92, 200, 224, 0.12); color: var(--cyan); }
-.kind-infra { background: rgba(255, 181, 71, 0.12); color: var(--amber); }
-.kind-dev { background: rgba(181, 156, 255, 0.12); color: var(--violet); }
+.pill { display: inline-block; padding: 0.15rem 0.5rem; border-left: 2px solid var(--line-strong); border-radius: 0 3px 3px 0; background: var(--panel-2); color: var(--muted); font: 600 0.72rem/1.35 var(--sans); white-space: nowrap; }
+/* Colour lives only in the left edge: the label itself stays neutral on the navy background. */
+.pill.is-done, .kind-web { border-left-color: var(--lime); }
+.pill.is-current, .kind-osint { border-left-color: var(--cyan); }
+.pill.is-upcoming, .kind-infra { border-left-color: var(--amber); }
+.kind-dev { border-left-color: var(--violet); }
 
 .inline-link { color: var(--lime); text-decoration: underline; text-decoration-color: rgba(159, 239, 0, 0.4); text-underline-offset: 0.2em; white-space: nowrap; }
 .inline-link:hover { text-decoration-color: var(--lime); }
