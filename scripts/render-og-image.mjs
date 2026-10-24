@@ -9,49 +9,29 @@ const publicDirectory = path.join(projectRoot, 'public');
 const cacheDirectory = path.join(projectRoot, 'node_modules', '.cache', 'og-fonts');
 
 const width = 1200;
-const height = 627;
+const height = 630;
 const outputFile = path.join(publicDirectory, 'og-image.jpg');
 
 const siteUrl = 'https://tahiryramambazafy.tahiry-ramambazafy.workers.dev/';
 
 const fontSources = [
-  { family: 'Barlow Condensed', weights: [700], file: 'barlow-condensed' },
-  { family: 'Space Mono', weights: [400, 700], file: 'space-mono' },
+  { family: 'IBM Plex Sans', weights: [500, 700], file: 'ibm-plex-sans' },
+  { family: 'JetBrains Mono', weights: [400, 700], file: 'jetbrains-mono' },
 ];
 
-function oklchToRgb(L, C, H) {
-  const hue = (H * Math.PI) / 180;
-  const a = C * Math.cos(hue);
-  const b = C * Math.sin(hue);
+const hex = (value) => ({ r: parseInt(value.slice(1, 3), 16), g: parseInt(value.slice(3, 5), 16), b: parseInt(value.slice(5, 7), 16) });
 
-  const lPrime = L + 0.3963377774 * a + 0.2158037573 * b;
-  const mPrime = L - 0.1055613458 * a - 0.0638541728 * b;
-  const sPrime = L - 0.0894841775 * a - 1.291485548 * b;
-
-  const l = lPrime ** 3;
-  const m = mPrime ** 3;
-  const s = sPrime ** 3;
-
-  const rLinear = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
-  const gLinear = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
-  const bLinear = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s;
-
-  const encode = (channel) => {
-    const value = channel <= 0.0031308 ? 12.92 * channel : 1.055 * channel ** (1 / 2.4) - 0.055;
-    return Math.min(255, Math.max(0, Math.round(value * 255)));
-  };
-
-  return { r: encode(rLinear), g: encode(gLinear), b: encode(bLinear) };
-}
-
+// Same tokens as src/styles/global.css.
 const palette = {
-  night: oklchToRgb(0.17, 0.012, 145),
-  ink: oklchToRgb(0.96, 0.012, 115),
-  muted: oklchToRgb(0.73, 0.018, 125),
-  subtle: oklchToRgb(0.58, 0.016, 125),
-  lime: oklchToRgb(0.88, 0.19, 124),
-  line: oklchToRgb(0.38, 0.018, 140),
-  glow: oklchToRgb(0.23, 0.025, 151),
+  night: hex('#111927'),
+  panel: hex('#1a2332'),
+  ink: hex('#e6ebf2'),
+  muted: hex('#a9b5c7'),
+  subtle: hex('#8593a8'),
+  lime: hex('#9fef00'),
+  onLime: hex('#111927'),
+  line: hex('#2a374b'),
+  glow: hex('#1d2a40'),
 };
 
 const rgba = (color, alpha = 1) => `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`;
@@ -94,10 +74,10 @@ async function registerFonts() {
   }
 
   const families = new Set(GlobalFonts.families.map((entry) => entry.family));
-  const display = families.has('Barlow Condensed') ? 'Barlow Condensed' : 'Arial Narrow';
-  const mono = families.has('Space Mono') ? 'Space Mono' : 'Consolas';
+  const display = families.has('IBM Plex Sans') ? 'IBM Plex Sans' : 'Segoe UI';
+  const mono = families.has('JetBrains Mono') ? 'JetBrains Mono' : 'Consolas';
 
-  if (!families.has('Arial Narrow')) GlobalFonts.registerFromPath('C:/Windows/Fonts/ARIALN.TTF', 'Arial Narrow');
+  if (!families.has('Segoe UI')) GlobalFonts.registerFromPath('C:/Windows/Fonts/segoeuib.ttf', 'Segoe UI');
   if (!families.has('Consolas')) GlobalFonts.registerFromPath('C:/Windows/Fonts/consola.ttf', 'Consolas');
 
   return { display, mono };
@@ -121,7 +101,7 @@ function drawBackground(context) {
   context.fillStyle = topLight;
   context.fillRect(0, 0, width, height);
 
-  context.strokeStyle = 'rgba(210, 226, 212, 0.055)';
+  context.strokeStyle = rgba(palette.line, 0.35);
   context.lineWidth = 1;
   for (let x = 0; x <= width; x += width / 12) {
     context.beginPath();
@@ -133,28 +113,6 @@ function drawBackground(context) {
     context.beginPath();
     context.moveTo(0, Math.round(y) + 0.5);
     context.lineTo(width, Math.round(y) + 0.5);
-    context.stroke();
-  }
-}
-
-function drawCorners(context) {
-  const inset = 34;
-  const arm = 26;
-  context.strokeStyle = rgba(palette.lime, 0.42);
-  context.lineWidth = 1.5;
-
-  const corners = [
-    [inset, inset, 1, 1],
-    [width - inset, inset, -1, 1],
-    [inset, height - inset, 1, -1],
-    [width - inset, height - inset, -1, -1],
-  ];
-
-  for (const [x, y, dx, dy] of corners) {
-    context.beginPath();
-    context.moveTo(x + dx * arm, y);
-    context.lineTo(x, y);
-    context.lineTo(x, y + dy * arm);
     context.stroke();
   }
 }
@@ -216,11 +174,6 @@ function drawNetwork(context) {
   context.arc(core[0], core[1], 6, 0, Math.PI * 2);
   context.fill();
 
-  context.fillStyle = rgba(palette.subtle, 0.85);
-  context.font = `400 11px 'Space Mono', Consolas, monospace`;
-  context.textAlign = 'center';
-  context.fillText('SURFACE D’ANALYSE', core[0], core[1] + 92);
-  context.textAlign = 'left';
 }
 
 function drawBrand(context, fonts) {
@@ -228,40 +181,29 @@ function drawBrand(context, fonts) {
   const top = 46;
   const size = 40;
 
-  context.strokeStyle = rgba(palette.lime);
-  context.lineWidth = 1.5;
-  context.strokeRect(left + 0.75, top + 0.75, size, size);
-
-  context.strokeStyle = rgba(palette.lime, 0.3);
-  context.lineWidth = 1;
-  context.beginPath();
-  context.moveTo(left + size / 2, top + 7);
-  context.lineTo(left + size / 2, top + size - 7);
-  context.stroke();
-
-  context.fillStyle = rgba(palette.ink);
-  context.font = `700 24px '${fonts.display}'`;
-  context.textBaseline = 'alphabetic';
-  context.fillText('T', left + 8, top + 29);
-
   context.fillStyle = rgba(palette.lime);
-  context.fillRect(left + size - 9, top + size - 9, 4, 4);
+  context.beginPath();
+  context.roundRect(left, top, size, size, 6);
+  context.fill();
 
-  context.fillStyle = rgba(palette.ink);
-  context.font = `700 13px '${fonts.mono}'`;
-  if ('letterSpacing' in context) context.letterSpacing = '1px';
-  context.fillText('TAHIRY RAMAMBAZAFY', left + size + 16, top + 25);
-  if ('letterSpacing' in context) context.letterSpacing = '0px';
-
-  context.fillStyle = rgba(palette.subtle);
-  context.font = `400 12px '${fonts.mono}'`;
-  context.textAlign = 'right';
-  if ('letterSpacing' in context) context.letterSpacing = '1px';
-  context.fillText('PORTFOLIO / 2026', width - 64, top + 25);
-  if ('letterSpacing' in context) context.letterSpacing = '0px';
+  context.fillStyle = rgba(palette.onLime);
+  context.font = `700 22px '${fonts.mono}'`;
+  context.textAlign = 'center';
+  context.textBaseline = 'alphabetic';
+  context.fillText('T', left + size / 2, top + 28);
   context.textAlign = 'left';
 
-  context.strokeStyle = rgba(palette.line, 0.55);
+  context.fillStyle = rgba(palette.ink);
+  context.font = `500 18px '${fonts.display}'`;
+  context.fillText('Tahiry Ramambazafy', left + size + 16, top + 26);
+
+  context.fillStyle = rgba(palette.subtle);
+  context.font = `400 13px '${fonts.mono}'`;
+  context.textAlign = 'right';
+  context.fillText('portfolio', width - 64, top + 26);
+  context.textAlign = 'left';
+
+  context.strokeStyle = rgba(palette.line);
   context.lineWidth = 1;
   context.beginPath();
   context.moveTo(64, top + size + 20.5);
@@ -271,73 +213,48 @@ function drawBrand(context, fonts) {
 
 function drawOverline(context, fonts) {
   const left = 64;
-  const baseline = 146;
+  const top = 160;
+  const label = 'Recherche une alternance en cybersécurité';
+
+  context.font = `400 15px '${fonts.mono}'`;
+  const pillWidth = context.measureText(label).width + 52;
+  context.fillStyle = rgba(palette.lime, 0.08);
+  context.strokeStyle = rgba(palette.lime, 0.4);
+  context.lineWidth = 1;
+  context.beginPath();
+  context.roundRect(left + 0.5, top + 0.5, pillWidth, 34, 17);
+  context.fill();
+  context.stroke();
 
   context.fillStyle = rgba(palette.lime);
   context.beginPath();
-  context.arc(left + 4, baseline - 4, 4, 0, Math.PI * 2);
+  context.arc(left + 20, top + 17.5, 4, 0, Math.PI * 2);
   context.fill();
-
-  context.fillStyle = rgba(palette.muted);
-  context.font = `400 12.5px '${fonts.mono}'`;
-  if ('letterSpacing' in context) context.letterSpacing = '1.4px';
-  context.fillText('ÉTUDIANT EN CYBERSÉCURITÉ', left + 20, baseline);
-
-  const labelWidth = context.measureText('ÉTUDIANT EN CYBERSÉCURITÉ').width;
-  context.fillStyle = rgba(palette.subtle);
-  context.fillText('·', left + 30 + labelWidth, baseline);
-  context.fillText('SYSTÈMES, RÉSEAUX & SÉCURITÉ WEB', left + 48 + labelWidth, baseline);
-  if ('letterSpacing' in context) context.letterSpacing = '0px';
+  context.fillText(label, left + 34, top + 22.5);
 }
 
 function drawHeadline(context, fonts) {
   const left = 64;
-  const maxWidth = 680;
-  const lines = [
-    { text: 'Comprendre', suffix: '.', style: 'fill' },
-    { text: 'Sécuriser', suffix: '.', style: 'fill' },
-    { text: 'Construire', suffix: '.', style: 'stroke' },
-  ];
-
-  let fontSize = 150;
-  context.font = `700 ${fontSize}px '${fonts.display}'`;
-  while (context.measureText('Comprendre.').width > maxWidth && fontSize > 88) {
-    fontSize -= 2;
-    context.font = `700 ${fontSize}px '${fonts.display}'`;
-  }
-
-  const lineHeight = fontSize * 0.84;
-  const top = 186;
   context.textBaseline = 'alphabetic';
+  context.fillStyle = rgba(palette.ink);
+  context.font = `700 92px '${fonts.display}'`;
+  context.fillText('Tahiry', left, 300);
+  context.fillText('Ramambazafy', left, 396);
 
-  lines.forEach((line, index) => {
-    const baseline = top + fontSize * 0.74 + index * lineHeight;
-    if (line.style === 'stroke') {
-      context.strokeStyle = rgba(palette.ink, 0.92);
-      context.lineWidth = 2.2;
-      context.strokeText(line.text, left, baseline);
-    } else {
-      context.fillStyle = rgba(palette.ink);
-      context.fillText(line.text, left, baseline);
-    }
-    context.fillStyle = rgba(palette.lime);
-    context.fillText(line.suffix, left + context.measureText(line.text).width, baseline);
-  });
-
-  return top + fontSize * 0.74 + 2 * lineHeight;
+  context.fillStyle = rgba(palette.muted);
+  context.font = `500 30px '${fonts.display}'`;
+  context.fillText('Étudiant en cybersécurité · Ynov', left, 456);
 }
 
 function drawFooter(context, fonts) {
-  const baseline = height - 34;
+  const baseline = height - 44;
 
   context.fillStyle = rgba(palette.subtle);
-  context.font = `400 12px '${fonts.mono}'`;
-  if ('letterSpacing' in context) context.letterSpacing = '1px';
-  context.fillText('SÉCURITÉ WEB · OSINT · LINUX · ANSIBLE', 64, baseline);
+  context.font = `400 15px '${fonts.mono}'`;
+  context.fillText('Sécurité web · OSINT · Linux · Ansible', 64, baseline);
   context.textAlign = 'right';
-  context.fillText('31° 36′ 48.0″ S / 43° 40′ 48.0″ E', width - 64, baseline);
+  context.fillText('Toulouse', width - 64, baseline);
   context.textAlign = 'left';
-  if ('letterSpacing' in context) context.letterSpacing = '0px';
 }
 
 function buildNoise() {
@@ -347,7 +264,7 @@ function buildNoise() {
     buffer[index] = value;
     buffer[index + 1] = value;
     buffer[index + 2] = value;
-    buffer[index + 3] = 30;
+    buffer[index + 3] = 12;
   }
   return sharp(buffer, { raw: { width, height, channels: 4 } }).png().toBuffer();
 }
@@ -357,7 +274,6 @@ const canvas = createCanvas(width, height);
 const context = canvas.getContext('2d');
 
 drawBackground(context);
-drawCorners(context);
 drawNetwork(context);
 drawBrand(context, fonts);
 drawOverline(context, fonts);
