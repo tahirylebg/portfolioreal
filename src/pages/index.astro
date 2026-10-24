@@ -118,6 +118,7 @@ const kindFilters = Object.entries(projectKinds)
     </nav>
 
     <main id="contenu">
+      <div class="intro-zone" data-spotlight>
       <section class="hero section-shell" id="accueil" aria-labelledby="hero-title">
         <div class="hero-copy">
           <p class="eyebrow">Recherche une alternance en cybersécurité · {profile.location}</p>
@@ -180,6 +181,7 @@ const kindFilters = Object.entries(projectKinds)
           </div>
         </div>
       </section>
+      </div>
 
       <section class="section projects-section" id="projets" aria-labelledby="projects-title">
         <div class="section-shell">
@@ -489,16 +491,17 @@ const kindFilters = Object.entries(projectKinds)
         new IntersectionObserver(([entry]) => backToTop.classList.toggle('is-visible', !entry.isIntersecting), { rootMargin: '0px 0px -50% 0px' }).observe(hero);
       }
 
-      // Hero spotlight (fine pointers only): one CSS variable pair, updated at most once per frame.
-      if (hero && !reducedMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      // Spotlight over the hero + Profil zone (fine pointers only): one CSS variable pair, updated at most once per frame.
+      const spotlightZone = document.querySelector('[data-spotlight]');
+      if (spotlightZone && !reducedMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
         let pending = null;
-        hero.addEventListener('pointermove', (event) => {
+        spotlightZone.addEventListener('pointermove', (event) => {
           if (pending) return;
           pending = requestAnimationFrame(() => {
-            // The spotlight layer spans the full viewport width, so x is the viewport x.
-            const bounds = hero.getBoundingClientRect();
-            hero.style.setProperty('--mx', `${event.clientX}px`);
-            hero.style.setProperty('--my', `${event.clientY - bounds.top}px`);
+            // The zone spans the full viewport width, so x is the viewport x.
+            const bounds = spotlightZone.getBoundingClientRect();
+            spotlightZone.style.setProperty('--mx', `${event.clientX}px`);
+            spotlightZone.style.setProperty('--my', `${event.clientY - bounds.top}px`);
             pending = null;
           });
         }, { passive: true });
