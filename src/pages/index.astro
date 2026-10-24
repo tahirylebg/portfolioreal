@@ -49,6 +49,13 @@ const sections = [
   { id: 'parcours', label: 'Parcours' },
   { id: 'contact', label: 'Contact' },
 ];
+// Stack "used in" labels → where they point: a project panel, or the Parcours section for internships / training.
+const projectByUse = Object.fromEntries(projects.map((project) => [project.useLabel, project.id]));
+const parcoursUses = new Set(['Stage Étoile', 'Formation Ynov', 'Préparation CCNA', 'SecNumacadémie']);
+const useParts = (use) => use.split(' · ').map((label) => ({ label, project: projectByUse[label], parcours: parcoursUses.has(label) }));
+const kindFilters = Object.entries(projectKinds)
+  .map(([kind, label]) => ({ kind, label, count: projects.filter((project) => project.kind === kind).length }))
+  .filter((filter) => filter.count > 0);
 ---
 
 <!doctype html>
@@ -94,8 +101,10 @@ const sections = [
       </a>
       <nav class="main-nav" aria-label="Navigation principale">
         {sections.map((section) => <a href={`#${section.id}`} data-section-link={section.id}>{section.label}</a>)}
+        <span class="nav-indicator" aria-hidden="true"></span>
       </nav>
       <div class="header-actions">
+        <button class="palette-hint" type="button" data-palette-open aria-keyshortcuts="Control+K" aria-label="Rechercher (Ctrl K)"><span>Rechercher</span><kbd>Ctrl K</kbd></button>
         <a class="icon-link" href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d={githubPath} /></svg>
         </a>
@@ -105,6 +114,7 @@ const sections = [
 
     <nav class="bottom-nav" aria-label="Navigation mobile">
       {sections.map((section) => <a href={`#${section.id}`} data-section-link={section.id}>{section.label}</a>)}
+      <span class="nav-indicator" aria-hidden="true"></span>
     </nav>
 
     <main id="contenu">
@@ -122,15 +132,15 @@ const sections = [
 
         <aside class="id-card" aria-labelledby="id-card-title">
           <header class="card-bar">
-            <p id="id-card-title" class="card-bar-title"><span aria-hidden="true">$</span> whoami</p>
+            <p id="id-card-title" class="card-bar-title"><span aria-hidden="true">$</span> whoami<i class="caret" aria-hidden="true"></i></p>
           </header>
           <dl class="id-list">
-            <div><dt>Formation</dt><dd>Bachelor Cybersécurité · Ynov</dd></div>
-            <div><dt>Titre visé</dt><dd>Administrateur systèmes, réseaux et bases de données · <a class="inline-link" href={profile.rncp.url} target="_blank" rel="noreferrer">{profile.rncp.code} <span aria-hidden="true">↗</span></a></dd></div>
-            <div><dt>En cours</dt><dd>{currentTraining.name}</dd></div>
-            <div><dt>Domaines</dt><dd>Sécurité web · OSINT · Linux · Réseaux</dd></div>
-            <div><dt>Recherche</dt><dd>{profile.seeking}</dd></div>
-            <div><dt>Localisation</dt><dd>{profile.location}</dd></div>
+            <div style="--i: 0"><dt>Formation</dt><dd>Bachelor Cybersécurité · Ynov</dd></div>
+            <div style="--i: 1"><dt>Titre visé</dt><dd>Administrateur systèmes, réseaux et bases de données · <a class="inline-link" href={profile.rncp.url} target="_blank" rel="noreferrer">{profile.rncp.code} <span aria-hidden="true">↗</span></a></dd></div>
+            <div style="--i: 2"><dt>En cours</dt><dd>{currentTraining.name}</dd></div>
+            <div style="--i: 3"><dt>Domaines</dt><dd>Sécurité web · OSINT · Linux · Réseaux</dd></div>
+            <div style="--i: 4"><dt>Recherche</dt><dd>{profile.seeking}</dd></div>
+            <div style="--i: 5"><dt>Localisation</dt><dd>{profile.location}</dd></div>
           </dl>
           <footer class="id-links">
             <a href={profile.github} target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
@@ -177,20 +187,25 @@ const sections = [
             <h2 id="projects-title">Projets <span class="count">{projects.length}</span></h2>
             <p class="section-intro">Projets d’école et personnels : applications, systèmes et analyse de sécurité. Chacun est documenté par un rapport ou son code source.</p>
           </div>
+          <div class="filter-bar" role="group" aria-label="Filtrer les projets par catégorie" data-reveal>
+            <button class="filter" type="button" data-filter="all" aria-pressed="true">Tous <span>{projects.length}</span></button>
+            {kindFilters.map((filter) => <button class="filter" type="button" data-filter={filter.kind} aria-pressed="false">{filter.label} <span>{filter.count}</span></button>)}
+          </div>
+          <p class="visually-hidden" aria-live="polite" data-filter-status></p>
           <div class="project-grid">
-            {projects.map((project) => (
-              <article class="card project-card" data-reveal>
+            {projects.map((project, index) => (
+              <article class="card project-card" id={`carte-${project.id}`} data-kind={project.kind} data-reveal style={`--i: ${index % 2}; view-transition-name: projet-${project.id}`}>
                 {project.cover && (
-                  <a class="project-cover" href={project.pdf ?? project.github} target="_blank" rel="noreferrer" tabindex="-1" aria-hidden="true">
+                  <div class="project-cover" aria-hidden="true">
                     <img src={project.cover} alt="" width="1200" height="675" loading="lazy" decoding="async" />
-                  </a>
+                  </div>
                 )}
                 <div class="project-body">
                   <p class="project-meta">
                     <span class:list={['pill', `kind-${project.kind}`]}>{projectKinds[project.kind]}</span>
                     <span class="project-category">{project.category}</span>
                   </p>
-                  <h3>{project.name}</h3>
+                  <h3><button class="project-open" type="button" data-project-open={project.id} aria-haspopup="dialog">{project.name}</button></h3>
                   <p class="project-description">{project.description}</p>
                   <dl class="project-spec">
                     <div><dt>Rôle</dt><dd>{project.role}</dd></div>
@@ -205,6 +220,34 @@ const sections = [
               </article>
             ))}
           </div>
+          {projects.map((project) => (
+            <template data-project-template={project.id}>
+              {project.cover && <img class="panel-cover" src={project.cover} alt="" width="1200" height="675" />}
+              <div class="panel-body">
+                <p class="project-meta">
+                  <span class="pill">{projectKinds[project.kind]}</span>
+                  <span class="project-category">{project.category}</span>
+                </p>
+                <h2 class="panel-title" id="panel-title">{project.name}</h2>
+                <p class="project-description">{project.description}</p>
+                <dl class="project-spec">
+                  <div><dt>Rôle</dt><dd>{project.role}</dd></div>
+                  <div><dt>Résultat</dt><dd>{project.result}</dd></div>
+                </dl>
+                <ul class="tag-list">{project.details.map((detail) => <li class="tag">{detail}</li>)}</ul>
+                <div class="project-actions">
+                  {project.pdf && <a class="button button-primary button-small" href={project.pdf} target="_blank" rel="noreferrer">Ouvrir le rapport <span aria-hidden="true">↗</span></a>}
+                  {project.github && <a class="button button-secondary button-small" href={project.github} target="_blank" rel="noreferrer">Code source <span aria-hidden="true">↗</span></a>}
+                </div>
+                {project.pdf && (
+                  <div class="panel-pdf">
+                    <p class="label">Aperçu du rapport</p>
+                    <iframe src={`${project.pdf}#view=FitH&toolbar=0`} title={`Rapport PDF : ${project.name}`} loading="lazy"></iframe>
+                  </div>
+                )}
+              </div>
+            </template>
+          ))}
         </div>
       </section>
 
@@ -223,7 +266,7 @@ const sections = [
               <p class="stack-summary">{domain.summary}</p>
               <ul class="stack-list">
                 {domain.items.map((item) => (
-                  <li>
+                  <li data-uses={useParts(item.use).map((part) => part.project).filter(Boolean).join(' ')}>
                     <span class="stack-icons" aria-hidden="true">
                       {item.icons.map(stackIcon).map((icon) => (
                         <svg class:list={['stack-icon', `is-${icon.kind}`]} viewBox="0 0 24 24" style={icon.color && `--brand: ${icon.color}`}>
@@ -232,7 +275,14 @@ const sections = [
                       ))}
                     </span>
                     <span class="stack-name">{item.name}</span>
-                    <span class="stack-use"><span class="visually-hidden">utilisé dans </span>{item.use}</span>
+                    <span class="stack-use"><span class="visually-hidden">utilisé dans </span>{useParts(item.use).map((part, i) => (
+                      <Fragment>
+                        {i > 0 && ' · '}
+                        {part.project
+                          ? <button class="use-link" type="button" data-project-open={part.project} data-use={part.project}>{part.label}</button>
+                          : part.parcours ? <a class="use-link" href="#parcours">{part.label}</a> : part.label}
+                      </Fragment>
+                    ))}</span>
                   </li>
                 ))}
               </ul>
@@ -318,7 +368,11 @@ const sections = [
             <p>Je recherche une alternance en cybersécurité. Pour en parler, ou pour un projet ou une question technique, écrivez-moi : je réponds sous 48 h.</p>
           </div>
           <div class="contact-actions">
-            <a class="contact-email" href={`mailto:${profile.email}`}>{profile.email}</a>
+            <div class="contact-email-row">
+              <a class="contact-email" href={`mailto:${profile.email}`}>{profile.email}</a>
+              <button class="button button-secondary button-small copy-button" type="button" data-copy={profile.email}>Copier</button>
+              <span class="visually-hidden" aria-live="polite" data-copy-status></span>
+            </div>
             <div class="contact-links">
               <a class="button button-primary" href={`mailto:${profile.email}`}>Envoyer un e-mail</a>
               <a class="button button-secondary" href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
@@ -334,6 +388,34 @@ const sections = [
       <span>Cybersécurité · Systèmes · Réseaux</span>
       <button class="easter-egg" type="button" data-game-open>./trace-run</button>
     </footer>
+
+    <a class="back-to-top" href="#accueil" aria-label="Retour en haut" data-back-to-top>↑</a>
+
+    <dialog class="project-panel" aria-labelledby="panel-title">
+      <div class="panel-bar">
+        <span class="label">Projet</span>
+        <button class="game-close" type="button" data-panel-close aria-label="Fermer le projet">✕</button>
+      </div>
+      <div class="panel-content" data-panel-content></div>
+    </dialog>
+
+    <dialog class="palette" aria-label="Recherche rapide">
+      <div class="palette-input">
+        <span aria-hidden="true">&gt;</span>
+        <input type="text" placeholder="Aller à… (projets, cv, osint, contact)" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true" aria-controls="palette-list" aria-autocomplete="list" data-palette-input />
+        <kbd>Échap</kbd>
+      </div>
+      <ul class="palette-list" id="palette-list" role="listbox" aria-label="Résultats" data-palette-list>
+        {sections.map((section) => <li role="option" data-action="goto" data-target={`#${section.id}`} data-group="Section">{section.label}</li>)}
+        {projects.map((project) => <li role="option" data-action="project" data-target={project.id} data-group="Projet" data-keywords={`${projectKinds[project.kind]} ${project.category} ${project.details.join(' ')}`}>{project.name}</li>)}
+        <li role="option" data-action="link" data-target="/cv-tahiry-ramambazafy.pdf" data-group="Lien" data-keywords="curriculum resume">CV (PDF)</li>
+        <li role="option" data-action="link" data-target={profile.github} data-group="Lien">GitHub</li>
+        <li role="option" data-action="link" data-target={profile.linkedin} data-group="Lien">LinkedIn</li>
+        <li role="option" data-action="copy" data-target={profile.email} data-group="Action" data-keywords="mail email contact">Copier l’adresse e-mail</li>
+        <li role="option" data-action="game" data-group="Action" data-keywords="jeu trace run easter egg">./trace-run</li>
+      </ul>
+      <p class="palette-empty" hidden data-palette-empty>Aucun résultat.</p>
+    </dialog>
 
     <dialog class="game-dialog" aria-labelledby="game-title">
       <section class="cyber-game">
@@ -358,6 +440,19 @@ const sections = [
 
     <script>
       const sectionLinks = [...document.querySelectorAll('[data-section-link]')];
+
+      // One sliding underline per nav, parked under the link marked aria-current.
+      const moveIndicators = () => {
+        document.querySelectorAll('.nav-indicator').forEach((indicator) => {
+          const active = indicator.parentElement.querySelector('[aria-current="location"]');
+          indicator.classList.toggle('is-visible', Boolean(active));
+          if (!active) return;
+          indicator.style.width = `${active.offsetWidth}px`;
+          indicator.style.transform = `translateX(${active.offsetLeft}px)`;
+        });
+      };
+      window.addEventListener('resize', moveIndicators, { passive: true });
+
       const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
@@ -365,6 +460,7 @@ const sections = [
             if (link.dataset.sectionLink === entry.target.id) link.setAttribute('aria-current', 'location');
             else link.removeAttribute('aria-current');
           });
+          moveIndicators();
         });
       }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
       new Set(sectionLinks.map((link) => link.dataset.sectionLink)).forEach((id) => {
@@ -384,6 +480,169 @@ const sections = [
           });
         }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
         document.querySelectorAll('[data-reveal]').forEach((node) => revealObserver.observe(node));
+      }
+
+      // Back to top: shown once the hero has left the viewport.
+      const hero = document.querySelector('.hero');
+      const backToTop = document.querySelector('[data-back-to-top]');
+      if (hero && backToTop) {
+        new IntersectionObserver(([entry]) => backToTop.classList.toggle('is-visible', !entry.isIntersecting), { rootMargin: '0px 0px -50% 0px' }).observe(hero);
+      }
+
+      // Hero spotlight (fine pointers only): one CSS variable pair, updated at most once per frame.
+      if (hero && !reducedMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        let pending = null;
+        hero.addEventListener('pointermove', (event) => {
+          if (pending) return;
+          pending = requestAnimationFrame(() => {
+            // The spotlight layer spans the full viewport width, so x is the viewport x.
+            const bounds = hero.getBoundingClientRect();
+            hero.style.setProperty('--mx', `${event.clientX}px`);
+            hero.style.setProperty('--my', `${event.clientY - bounds.top}px`);
+            pending = null;
+          });
+        }, { passive: true });
+      }
+
+      // Project filter: toggles [hidden] on cards, animated by the View Transitions API when available.
+      const filterButtons = [...document.querySelectorAll('[data-filter]')];
+      const projectCards = [...document.querySelectorAll('.project-card')];
+      const filterStatus = document.querySelector('[data-filter-status]');
+      const applyFilter = (kind) => {
+        let shown = 0;
+        projectCards.forEach((card) => {
+          const visible = kind === 'all' || card.dataset.kind === kind;
+          card.hidden = !visible;
+          if (visible) shown += 1;
+        });
+        filterButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.filter === kind)));
+        if (filterStatus) filterStatus.textContent = `${shown} projet${shown > 1 ? 's' : ''} affiché${shown > 1 ? 's' : ''}`;
+      };
+      let filterTransition = null;
+      filterButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const run = () => applyFilter(button.dataset.filter);
+          filterTransition?.skipTransition();
+          if (document.startViewTransition && !reducedMotion) filterTransition = document.startViewTransition(run);
+          else run();
+        });
+      });
+
+      // Project panel: content cloned from a server-rendered <template>; the URL hash makes a project shareable.
+      const panel = document.querySelector('.project-panel');
+      const panelContent = document.querySelector('[data-panel-content]');
+      let panelOpener = null;
+      const openProject = (id, opener) => {
+        const template = document.querySelector(`[data-project-template="${id}"]`);
+        if (!panel || !panelContent || !template) return;
+        filterTransition?.skipTransition();
+        panelContent.replaceChildren(template.content.cloneNode(true));
+        panelOpener = opener ?? document.querySelector(`[data-project-open="${id}"]`);
+        if (!panel.open) panel.showModal();
+        panel.scrollTop = 0;
+        history.replaceState(null, '', `#projet-${id}`);
+      };
+      panel?.addEventListener('close', () => {
+        panelContent?.replaceChildren();
+        history.replaceState(null, '', `${location.pathname}${location.search}`);
+        panelOpener?.focus({ preventScroll: true });
+      });
+      panel?.addEventListener('click', (event) => { if (event.target === panel) panel.close(); });
+      document.querySelector('[data-panel-close]')?.addEventListener('click', () => panel?.close());
+      document.querySelectorAll('[data-project-open]').forEach((trigger) => {
+        trigger.addEventListener('click', () => openProject(trigger.dataset.projectOpen, trigger));
+      });
+      if (location.hash.startsWith('#projet-')) openProject(location.hash.slice('#projet-'.length));
+
+      // Stack ↔ projects: hovering a "used in" link highlights every tool used on that same project.
+      const stackItems = [...document.querySelectorAll('.stack-list li[data-uses]')];
+      document.querySelectorAll('.use-link[data-use]').forEach((link) => {
+        const toggle = (on) => stackItems.forEach((item) => item.classList.toggle('is-linked', on && item.dataset.uses.split(' ').includes(link.dataset.use)));
+        link.addEventListener('pointerenter', () => toggle(true));
+        link.addEventListener('pointerleave', () => toggle(false));
+        link.addEventListener('focus', () => toggle(true));
+        link.addEventListener('blur', () => toggle(false));
+      });
+
+      // Copy e-mail, with a polite live-region announcement.
+      const copyText = async (text) => {
+        try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
+      };
+      const copyButton = document.querySelector('[data-copy]');
+      const copyStatus = document.querySelector('[data-copy-status]');
+      copyButton?.addEventListener('click', async () => {
+        const ok = await copyText(copyButton.dataset.copy);
+        copyButton.textContent = ok ? 'Copié ✓' : 'Échec';
+        if (copyStatus) copyStatus.textContent = ok ? 'Adresse e-mail copiée' : 'Copie impossible';
+        setTimeout(() => { copyButton.textContent = 'Copier'; }, 2000);
+      });
+
+      // Command palette (Ctrl/⌘ + K or "/"): filters the options, ↑ ↓ to move, Entrée to run.
+      const palette = document.querySelector('.palette');
+      const paletteInput = document.querySelector('[data-palette-input]');
+      const paletteEmpty = document.querySelector('[data-palette-empty]');
+      const paletteOptions = [...document.querySelectorAll('[data-palette-list] [role="option"]')];
+      if (palette && paletteInput) {
+        const normalize = (text) => text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+        paletteOptions.forEach((option, index) => {
+          option.id = `palette-option-${index}`;
+          option.dataset.search = normalize(`${option.textContent} ${option.dataset.group} ${option.dataset.keywords ?? ''}`);
+        });
+        let activeIndex = 0;
+        const visibleOptions = () => paletteOptions.filter((option) => !option.hidden);
+        const setActive = (index) => {
+          const options = visibleOptions();
+          activeIndex = options.length ? (index + options.length) % options.length : 0;
+          paletteOptions.forEach((option) => option.setAttribute('aria-selected', 'false'));
+          const active = options[activeIndex];
+          if (active) {
+            active.setAttribute('aria-selected', 'true');
+            active.scrollIntoView({ block: 'nearest' });
+            paletteInput.setAttribute('aria-activedescendant', active.id);
+          } else paletteInput.removeAttribute('aria-activedescendant');
+        };
+        const filterOptions = () => {
+          const query = normalize(paletteInput.value.trim());
+          paletteOptions.forEach((option) => { option.hidden = Boolean(query) && !query.split(/\s+/).every((word) => option.dataset.search.includes(word)); });
+          if (paletteEmpty) paletteEmpty.hidden = visibleOptions().length > 0;
+          setActive(0);
+        };
+        const runOption = async (option) => {
+          if (!option) return;
+          const { action, target } = option.dataset;
+          palette.close();
+          if (action === 'goto') document.querySelector(target)?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
+          if (action === 'project') openProject(target);
+          if (action === 'link') window.open(target, '_blank', 'noreferrer');
+          if (action === 'copy' && copyStatus) copyStatus.textContent = (await copyText(target)) ? 'Adresse e-mail copiée' : 'Copie impossible';
+          if (action === 'game') document.querySelector('[data-game-open]')?.click();
+        };
+        const openPalette = () => {
+          if (palette.open || document.querySelector('dialog[open]')) return;
+          paletteInput.value = '';
+          filterOptions();
+          palette.showModal();
+          paletteInput.focus();
+        };
+        paletteInput.addEventListener('input', filterOptions);
+        paletteInput.addEventListener('keydown', (event) => {
+          if (event.key === 'ArrowDown') { event.preventDefault(); setActive(activeIndex + 1); }
+          if (event.key === 'ArrowUp') { event.preventDefault(); setActive(activeIndex - 1); }
+          if (event.key === 'Enter') { event.preventDefault(); runOption(visibleOptions()[activeIndex]); }
+        });
+        paletteOptions.forEach((option) => {
+          option.addEventListener('click', () => runOption(option));
+          option.addEventListener('pointermove', () => setActive(visibleOptions().indexOf(option)));
+        });
+        palette.addEventListener('click', (event) => { if (event.target === palette) palette.close(); });
+        document.querySelectorAll('[data-palette-open]').forEach((button) => button.addEventListener('click', openPalette));
+        window.addEventListener('keydown', (event) => {
+          const typing = event.target instanceof HTMLElement && event.target.matches('input, textarea, [contenteditable]');
+          if ((event.key.toLowerCase() === 'k' && (event.ctrlKey || event.metaKey)) || (event.key === '/' && !typing)) {
+            event.preventDefault();
+            openPalette();
+          }
+        });
       }
 
       // Trace Run: easter egg opened from the footer.

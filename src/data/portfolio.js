@@ -29,6 +29,7 @@ export const profile = {
 };
 
 // Every project shows: name, role, stack (details), result and at least one link (pdf / github).
+// useLabel: the short name the stack's "use" field refers to (links a tool to its project).
 // kind: web | osint | infra | dev, drives the category badge (one colour per category, see projectKinds).
 export const projectKinds = {
   web: 'Sécurité web',
@@ -40,6 +41,7 @@ export const projectKinds = {
 export const projects = [
   {
     id: 'natty',
+    useLabel: 'Natty',
     pdf: '/natty.pdf',
     github: 'https://github.com/DylanNeural/Natty',
     cover: '/natty-cover.webp',
@@ -55,6 +57,7 @@ export const projects = [
   },
   {
     id: 'osint-nyv',
+    useLabel: 'OSINT Ynov',
     pdf: '/osint-nyv.pdf',
     cover: '/osint-nyv-cover.webp',
     name: 'OSINT Ynov',
@@ -69,6 +72,7 @@ export const projects = [
   },
   {
     id: 'portail-securise',
+    useLabel: 'Portail cloud',
     pdf: '/portail-cloud.pdf',
     cover: '/portail-cloud-cover.webp',
     name: 'Portail cloud sécurisé',
@@ -83,6 +87,7 @@ export const projects = [
   },
   {
     id: 'memoire-c',
+    useLabel: 'Diagnostic mémoire',
     pdf: '/diagnostic-memoire-c.pdf',
     cover: '/diagnostic-memoire-c-cover.webp',
     name: 'Diagnostic mémoire en C',
@@ -97,6 +102,7 @@ export const projects = [
   },
   {
     id: 'ansible-rebuild',
+    useLabel: 'Rebuild serveur',
     pdf: '/ansible-automation-rebuild.pdf',
     cover: '/ansible-automation-rebuild-cover.webp',
     name: 'Automatisation Ansible — Rebuild',
@@ -111,6 +117,7 @@ export const projects = [
   },
   {
     id: 'pymagotchi',
+    useLabel: 'Pymagotchi',
     pdf: '/pymagotchi.pdf',
     cover: '/pymagotchi-cover.webp',
     github: 'https://github.com/tahirylebg/Python-Tamagotchi',
