@@ -29,6 +29,7 @@ export const profile = {
 };
 
 // Every project shows: name, role, stack (details), result and at least one link (pdf / github).
+// doc: optional technical documentation (PDF), shown next to the report.
 // useLabel: the short name the stack's "use" field refers to (links a tool to its project).
 // kind: web | osint | infra | dev, drives the category badge (one colour per category, see projectKinds).
 export const projectKinds = {
@@ -74,6 +75,7 @@ export const projects = [
     id: 'portail-securise',
     useLabel: 'Portail cloud',
     pdf: '/portail-cloud.pdf',
+    doc: '/portail-cloud-documentation.pdf',
     cover: '/portail-cloud-cover.webp',
     name: 'Portail cloud sécurisé',
     category: 'Infrastructure · Linux',
