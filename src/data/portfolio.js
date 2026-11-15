@@ -41,6 +41,22 @@ export const projectKinds = {
 
 export const projects = [
   {
+    id: 'nordis',
+    useLabel: 'Nordis',
+    pdf: '/nordis.pdf',
+    doc: '/nordis-documentation.pdf',
+    cover: '/nordis-cover.webp',
+    name: 'Infrastructure Nordis Distribution',
+    category: 'Infrastructure · Windows Server · Linux',
+    description:
+      "Refonte complète de l'infrastructure d'une PME de 80 personnes : 7 VM réparties dans 6 VLAN derrière un pare-feu OPNsense, domaine Active Directory redondé, serveurs Debian intégrés, mises à jour, journaux et sauvegardes centralisés.",
+    details: ['OPNsense · VLAN · DMZ', 'AD DS · DNS · DHCP · GPO', 'Debian · RAID 5 · rsyslog'],
+    role: 'Administrateur systèmes et réseaux (projet fil rouge)',
+    result: 'Cahier des charges couvert par 32 preuves, restauration testée et 13 incidents réels documentés.',
+    kind: 'infra',
+    visual: 'infra',
+  },
+  {
     id: 'natty',
     useLabel: 'Natty',
     pdf: '/natty.pdf',
@@ -275,7 +291,8 @@ export const stack = [
     summary: 'Déployer, configurer et automatiser des serveurs fiables.',
     items: [
       { name: 'Linux · Ubuntu Server', use: 'Portail cloud', icons: ['linux', 'ubuntu'] },
-      { name: 'Windows Server', use: 'Formation Ynov', icons: ['windows'] },
+      { name: 'Windows Server · Active Directory', use: 'Nordis', icons: ['windows'] },
+      { name: 'OPNsense · VLAN · DMZ', use: 'Nordis', icons: ['firewall'] },
       { name: 'VMware · Hyper-V · VirtualBox', use: 'Labs virtualisés', icons: ['vm', 'virtualbox'] },
       { name: 'Nginx', use: 'Portail cloud', icons: ['nginx'] },
       { name: 'HTTPS · TLS · OpenSSL', use: 'Portail cloud', icons: ['key'] },

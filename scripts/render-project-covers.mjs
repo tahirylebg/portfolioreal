@@ -10,6 +10,7 @@ const publicDirectory = path.join(projectRoot, 'public');
 const outputWidth = 1200;
 const outputHeight = 675;
 const documents = [
+  { source: 'nordis.pdf', output: 'nordis-cover.webp' },
   { source: 'natty.pdf', output: 'natty-cover.webp' },
   { source: 'osint-nyv.pdf', output: 'osint-nyv-cover.webp' },
   { source: 'portail-cloud.pdf', output: 'portail-cloud-cover.webp' },
