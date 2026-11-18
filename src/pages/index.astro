@@ -217,6 +217,8 @@ const kindFilters = Object.entries(projectKinds)
                   <div class="project-actions">
                     {project.pdf && <a class="button button-secondary button-small" href={project.pdf} target="_blank" rel="noreferrer">Rapport PDF <span aria-hidden="true">↗</span></a>}
                     {project.doc && <a class="button button-secondary button-small" href={project.doc} target="_blank" rel="noreferrer">Documentation <span aria-hidden="true">↗</span></a>}
+                    {project.infra && <a class="button button-secondary button-small" href={project.infra} target="_blank" rel="noreferrer">Dossier INFRA <span aria-hidden="true">↗</span></a>}
+                    {project.slides && <a class="button button-secondary button-small" href={project.slides} target="_blank" rel="noreferrer">Présentation <span aria-hidden="true">↗</span></a>}
                     {project.github && <a class="button button-secondary button-small" href={project.github} target="_blank" rel="noreferrer">Code source <span aria-hidden="true">↗</span></a>}
                   </div>
                 </div>
@@ -241,6 +243,8 @@ const kindFilters = Object.entries(projectKinds)
                 <div class="project-actions">
                   {project.pdf && <a class="button button-primary button-small" href={project.pdf} target="_blank" rel="noreferrer">Ouvrir le rapport <span aria-hidden="true">↗</span></a>}
                   {project.doc && <a class="button button-secondary button-small" href={project.doc} target="_blank" rel="noreferrer">Documentation <span aria-hidden="true">↗</span></a>}
+                  {project.infra && <a class="button button-secondary button-small" href={project.infra} target="_blank" rel="noreferrer">Dossier INFRA <span aria-hidden="true">↗</span></a>}
+                  {project.slides && <a class="button button-secondary button-small" href={project.slides} target="_blank" rel="noreferrer">Présentation <span aria-hidden="true">↗</span></a>}
                   {project.github && <a class="button button-secondary button-small" href={project.github} target="_blank" rel="noreferrer">Code source <span aria-hidden="true">↗</span></a>}
                 </div>
                 {project.pdf && (

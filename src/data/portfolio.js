@@ -41,6 +41,24 @@ export const projectKinds = {
 
 export const projects = [
   {
+    id: 'ymmo',
+    useLabel: 'Ymmo',
+    pdf: '/ymmo-presentation.pdf',
+    doc: '/ymmo-dossier-dev.pdf',
+    infra: '/ymmo-dossier-infra.pdf',
+    slides: '/ymmo-presentation.pptx',
+    cover: '/ymmo-cover.webp',
+    name: 'Ymmo',
+    category: 'Immobilier · plateforme web · infrastructure',
+    description:
+      "Plateforme immobilière centralisée pour un siège et 12 agences, avec quatre rôles utilisateurs, des parcours de vente sécurisés, des analyses prédictives et une infrastructure réseau multi-sites.",
+    details: ['Python 3.12 · FastAPI · PostgreSQL', 'VPN · VLAN · Active Directory', 'Docker · CI/CD · Azure'],
+    role: 'Conception DEV & architecture infrastructure',
+    result: 'Plateforme, réseau sécurisé, stratégie de sauvegarde et extension cloud documentés pour 13 sites et environ 90 collaborateurs.',
+    kind: 'infra',
+    visual: 'ymmo',
+  },
+  {
     id: 'nordis',
     useLabel: 'Nordis',
     pdf: '/nordis.pdf',
