@@ -43,10 +43,10 @@ export const projects = [
   {
     id: 'ymmo',
     useLabel: 'Ymmo',
-    pdf: '/ymmo-presentation.pdf',
     doc: '/ymmo-dossier-dev.pdf',
     infra: '/ymmo-dossier-infra.pdf',
     slides: '/ymmo-presentation.pptx',
+    github: 'https://github.com/tahirylebg/ymmo.git',
     cover: '/ymmo-cover.webp',
     name: 'Ymmo',
     category: 'Immobilier · plateforme web · infrastructure',
