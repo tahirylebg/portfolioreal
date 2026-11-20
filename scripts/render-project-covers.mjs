@@ -10,6 +10,7 @@ const publicDirectory = path.join(projectRoot, 'public');
 const outputWidth = 1200;
 const outputHeight = 675;
 const documents = [
+  { source: 'boxing-shop-presentation.pdf', output: 'boxing-shop-cover.webp' },
   { source: 'ymmo-presentation.pdf', output: 'ymmo-cover.webp' },
   { source: 'nordis.pdf', output: 'nordis-cover.webp' },
   { source: 'natty.pdf', output: 'natty-cover.webp' },

@@ -41,6 +41,23 @@ export const projectKinds = {
 
 export const projects = [
   {
+    id: 'boxing-shop',
+    useLabel: 'Boxing Shop',
+    pdf: '/boxing-shop-presentation.pdf',
+    doc: '/boxing-shop-documentation.pdf',
+    github: 'https://github.com/tahirylebg/BoxingShop.git',
+    cover: '/boxing-shop-cover.webp',
+    name: 'Boxing Shop',
+    category: 'E-commerce · Django · paiement',
+    description:
+      "Boutique e-commerce dédiée aux équipements de boxe et d'arts martiaux, avec catalogue filtrable, panier, paiements Stripe sécurisés, comptes clients et back-office.",
+    details: ['Python 3.12 · Django 5.2 · PostgreSQL 16', 'Stripe Checkout · Apple Pay · Google Pay', 'Docker · Gunicorn · Nginx · 76 tests'],
+    role: 'Conception, développement back-end & sécurité',
+    result: 'Catalogue de démonstration avec 34 produits / 227 SKU, webhooks Stripe vérifiés et scores Lighthouse 97–100 / 100 / 100 / 100.',
+    kind: 'web',
+    visual: 'boxing-shop',
+  },
+  {
     id: 'ymmo',
     useLabel: 'Ymmo',
     doc: '/ymmo-dossier-dev.pdf',
